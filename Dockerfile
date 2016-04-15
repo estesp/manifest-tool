@@ -34,3 +34,5 @@ RUN set -x \
 WORKDIR /go/src/github.com/estesp/manifest-tool
 
 COPY . /go/src/github.com/estesp/manifest-tool
+
+RUN go build
