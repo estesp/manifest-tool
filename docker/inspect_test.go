@@ -35,34 +35,62 @@ func TestsplitHostname(t *testing.T) {
 }
 
 func Testvalidatename(t *testing.T) {
-        var crctnames = []struct {
-                a string
-        }{
-                {"localhost:5000/hello-world"},
-                {"myregistrydomain:5000/java"},
-                {"docker.io/busybox"},
-        }
-        var wrngnames = []struct {
-                b string
-        }{
-                {"localhost:5000,hello-world"},
-                {"myregistrydomain:5000&java"},
-                {"docker.io@busybox"},
-        }
+	var crctnames = []struct {
+		a string
+	}{
+		{"localhost:5000/hello-world"},
+		{"myregistrydomain:5000/java"},
+		{"docker.io/busybox"},
+	}
+	var wrngnames = []struct {
+		b string
+	}{
+		{"localhost:5000,hello-world"},
+		{"myregistrydomain:5000&java"},
+		{"docker.io@busybox"},
+	}
 
-        for _, i := range crctnames {
-                res := validateName(i.a)
-                if res != nil{
-                        t.Errorf("%s is an invalid name", i.a)
-                }
+	for _, i := range crctnames {
+		res := validateName(i.a)
+		if res != nil {
+			t.Errorf("%s is an invalid name", i.a)
+		}
 
-                for _, j := range wrngnames {
-                        res := validateName(j.b)
-                        if res == nil {
-                                t.Errorf("%s is an invalid name", j.b)
-                        }
+		for _, j := range wrngnames {
+			res := validateName(j.b)
+			if res == nil {
+				t.Errorf("%s is an invalid name", j.b)
+			}
 
-                }
-        }
+		}
+	}
 }
+func TestvalidateRepoName(t *testing.T) {
+	var crctnames = []struct {
+		a string
+	}{
+		{"localhost:5000"},
+		{"myregistrydomain:5000"},
+		{"docker.io"},
+	}
+	var wrngnames = []struct {
+		b string
+	}{
+		{""},
+	}
 
+	for _, i := range crctnames {
+		res := validateRepoName(i.a)
+		if res != nil {
+			t.Errorf("%s is an invalid name", i.a)
+		}
+
+		for _, j := range wrngnames {
+			res := validateRepoName(j.b)
+			if res == nil {
+				t.Errorf("%s is an invalid name", j.b)
+			}
+
+		}
+	}
+}
