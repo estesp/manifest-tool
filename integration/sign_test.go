@@ -84,3 +84,13 @@ func (s *SigningSuite) SetUpTest(c *check.C) {
 	s.fingerprint, err = findFingerprint(lines)
 	c.Assert(err, check.IsNil)
 }
+
+func (s *SigningSuite) TearDownTest(c *check.C) {
+	if s.gpgHome != "" {
+		err := os.RemoveAll(s.gpgHome)
+		c.Assert(err, check.IsNil)
+	}
+	s.gpgHome = ""
+
+	os.Unsetenv("GNUPGHOME")
+}
