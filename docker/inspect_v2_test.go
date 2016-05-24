@@ -8,8 +8,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/docker/distribution"
 	"github.com/docker/distribution/digest"
 	"github.com/docker/distribution/manifest/schema1"
+	schema2 "github.com/docker/distribution/manifest/schema2"
 	"github.com/docker/docker/reference"
 )
 
@@ -163,5 +165,34 @@ func TestValidateManifest(t *testing.T) {
 	if verifiedManifest.FSLayers[0].BlobSum != expectedFSLayer0 {
 		t.Fatal("unexpected FSLayer in extra data manifest")
 	}
+}
 
+func Testschema2ManifestDigest(t *testing.T) {
+	manifest := schema2.Manifest{
+		Versioned: schema2.SchemaVersion,
+		Config: distribution.Descriptor{
+			Digest:    "sha256:47af6ca8a14a27f98f16a1c1b3a5a875f5a8eeb48cbdb2353a1d8d7a3b3eaf9e",
+			Size:      1391,
+			MediaType: "application/octet-stream",
+		},
+		Layers: []distribution.Descriptor{
+			{
+				Digest:    "sha256:efd26ecc95486998b41b3fe167236e3fb3e109c66dd1a51ab5161e40b06cf486",
+				Size:      51342828,
+				MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
+			},
+			{
+				Digest:    "sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4",
+				Size:      32,
+				MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
+			},
+		},
+	}
+	mfst, _ := schema2.FromStruct(manifest)
+	name := "myregistrydomain.com:5000/debian:x86_latest"
+	ref, _ := reference.ParseNamed(name)
+	digest, _ := schema2ManifestDigest(ref, mfst)
+	if digest != "sha256:1378e0b07a8e1956a35975ca063252e3a1323cc4dba46345413474ff1eeb0018" {
+		t.Errorf("%s is invalid digest", digest)
+	}
 }
