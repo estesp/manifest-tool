@@ -3,16 +3,17 @@ package main
 import (
 	"errors"
 	"github.com/go-check/check"
-	"os/exec"
+	"io"
 	"io/ioutil"
 	"os"
-	"io"
+	"os/exec"
 	"strings"
 )
 
 const (
-	gpgBinary = "gpg"
-	manifestBinary = "manifest"
+	gpgBinary               = "gpg"
+	manifestBinary          = "manifest"
+	TestImageManifestDigest = "sha256:20bf21ed457b390829cdbeec8795a7bea1626991fda603e0d01b4e7f60427e55"
 )
 
 func init() {
@@ -93,4 +94,22 @@ func (s *SigningSuite) TearDownTest(c *check.C) {
 	s.gpgHome = ""
 
 	os.Unsetenv("GNUPGHOME")
+}
+
+func (s *SigningSuite) TestSignVerifySmoke(c *check.C) {
+	manifestPath := "../docker/fixtures/validate_manifest/schema2_manifest.json"
+	dockerReference := "testing/smoketest"
+
+	sigOutput, err := ioutil.TempFile("", "sig")
+	c.Assert(err, check.IsNil)
+	defer os.Remove(sigOutput.Name())
+	out, err := exec.Command(manifestBinary, "standalone-sign", "-o", sigOutput.Name(),
+		manifestPath, dockerReference, s.fingerprint).CombinedOutput()
+	c.Assert(err, check.IsNil, check.Commentf("%s", out))
+	c.Assert(string(out), check.Equals, "")
+
+	out, err = exec.Command(manifestBinary, "standalone-verify", manifestPath,
+		dockerReference, s.fingerprint, sigOutput.Name()).CombinedOutput()
+	c.Assert(err, check.IsNil, check.Commentf("%s", out))
+	c.Assert(string(out), check.Equals, "Signature verified, digest "+TestImageManifestDigest+"\n")
 }
