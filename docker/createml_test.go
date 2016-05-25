@@ -1,7 +1,10 @@
 package docker
 
-import "testing"
-
+import (
+        "testing"
+"github.com/docker/distribution/registry/api/v2"
+        "github.com/docker/docker/reference"
+)
 func TeststatusSuccess(t *testing.T) {
         var crctstatus = []struct {
                 a int
@@ -39,3 +42,12 @@ func TeststatusSuccess(t *testing.T) {
         }
 }
 
+func  (t *testing.T) {
+        urlBuilder, err := v2.NewURLBuilderFromString("https://myregistrydomain.com:5000")
+        name := "debian:latest"
+        ref, _ := reference.ParseNamed(name)
+        url, err := createManifestURLFromRef(ref, urlBuilder)
+        if url != " https://myregistrydomain.com:5000/v2/debian/manifests/latest" {
+                t.Errorf("Error setting up repository endpoint and references for %q: %v", ref, err)
+        }
+}
