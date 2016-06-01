@@ -8,6 +8,7 @@ import (
         "github.com/docker/docker/registry"
         "github.com/estesp/manifest-tool/vendor/github.com/docker/docker/registry"
         registrytypes "github.com/docker/engine-api/types/registry"
+        "github.com/estesp/manifest-tool/vendor/golang.org/x/net/context"
 )
 func TeststatusSuccess(t *testing.T) {
         var crctstatus = []struct {
@@ -76,3 +77,11 @@ func TestsetupRepo(t *testing.T) {
                 t.Errorf("Error setting up repository reponame %s", res)
                 }
         }
+func TestPutManifestList(t *testing.T) {
+        ctx :=context.Background()
+        filePath := "/home/mathew/listm.yml"
+        str,err := PutManifestList(ctx, filePath)
+        if err != nil{
+                t.Errorf("Error in PutManifestList %s", str)
+        }
+}
