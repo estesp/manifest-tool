@@ -77,11 +77,30 @@ func TestsetupRepo(t *testing.T) {
                 t.Errorf("Error setting up repository reponame %s", res)
                 }
         }
+
 func TestPutManifestList(t *testing.T) {
         ctx :=context.Background()
         filePath := "/home/mathew/listm.yml"
         str,err := PutManifestList(ctx, filePath)
         if err != nil{
                 t.Errorf("Error in PutManifestList %s", str)
+        }
+}
+func TestgetHTTPClient(t*testing.T){
+        c := context.Background()
+        repoinf := registry.RepositoryInfo{
+                ref,
+                Index: *registrytypes.IndexInfo{
+                        Name:  "myregistrydomain.com:5000",
+                        Mirrors: {},
+                        Secure:  false,
+                        Official:  false,
+                },
+                Official: false,
+        }
+        reponame := "hello-world"
+        cli,err := getHTTPClient(c,repoinf,reponame)
+        if err != nil{
+                t.Errorf("Error in  getHTTPClient%s", str)
         }
 }
