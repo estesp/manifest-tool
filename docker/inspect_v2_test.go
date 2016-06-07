@@ -168,7 +168,7 @@ func TestValidateManifest(t *testing.T) {
 }
 
 func Testschema2ManifestDigest(t *testing.T) {
-	manifest := schema2.Manifest{
+	mf := schema2.Manifest{
 		Versioned: schema2.SchemaVersion,
 		Config: distribution.Descriptor{
 			Digest:    "sha256:47af6ca8a14a27f98f16a1c1b3a5a875f5a8eeb48cbdb2353a1d8d7a3b3eaf9e",
@@ -195,4 +195,94 @@ func Testschema2ManifestDigest(t *testing.T) {
 	if digest != "sha256:1378e0b07a8e1956a35975ca063252e3a1323cc4dba46345413474ff1eeb0018" {
 		t.Errorf("%s is invalid digest", digest)
 	}
+}
+func TestFetch(t *testing.T) {
+	mf:{
+	endpoint: {
+		Mirror: false,
+		URL: https://registry-1.docker.io,
+		Version: v2,
+		Official: true,
+		TrimHostname:  true,
+		TLSConfig: {
+			Rand: <nil>,
+			Time: <nil>,
+			Certificates:  <nil>,
+			NameToCertificate: <nil>,
+			GetCertificate: <nil>,
+			RootCAs: <nil>,
+			NextProtos:  <nil>,
+			ServerName:  "",
+			ClientAuth: 0,
+			ClientCAs: <nil>,
+			InsecureSkipVerify: false,
+			CipherSuites: {
+			 49196,
+			 49200,
+			 49195,
+			 49199,
+			 49162,
+			 49161,
+			49172,
+			 49171,
+			 53,
+			 47
+			},
+			PreferServerCipherSuites:  true,
+			SessionTicketsDisabled:  false,
+			SessionTicketKey:  {
+			00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+			00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+			},
+			ClientSessionCache: <nil>,
+			MinVersion:  769,
+			MaxVersion:  0,
+			CurvePreferences:  <nil>,
+			serverInitOnce:  {
+				m:  {
+					state:  0,
+					sema:  0
+				},
+				done: 0
+			},
+			mutex:  {
+				w:  {
+					state:  0,
+					sema:  0
+				},
+				writerSem:  0,
+				readerSem:  0,
+				readerCount:  0,
+				readerWait:  0
+			},
+			sessionTicketKeys:  <nil>
+		})
+	},
+	repoInfo: golang,
+	repo: <nil>,
+	confirmedV2: false,
+
+	service:{
+		config: {
+			ServiceConfig: (registry.ServiceConfig) {
+				InsecureRegistryCIDRs:  {<nil>},
+				IndexConfigs:  {
+				Name: "docker.io",
+				Mirrors:  <nil>,
+				Secure:  true,
+				Official:  true
+				})
+				},
+				Mirrors:<nil>
+			},
+			V2Only:  false
+		})
+	})
+})
+ctx :=context.background()
+name := "golang:latest"
+ref, _ := reference.ParseNamed(name)
+_,err := mf.Fetch(ctx,ref)
+if err!=nill{
+t.Errorf("error in fetching %s", ref)
 }
