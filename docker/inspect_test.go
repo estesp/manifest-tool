@@ -1,6 +1,10 @@
 package docker
 
-import "testing"
+import (
+	"testing"
+	"github.com/estesp/manifest-tool/vendor/golang.org/x/net/context"
+	registryTypes "github.com/docker/engine-api/types/registry"
+)
 
 func TestsplitHostname(t *testing.T) {
 	var crcthostnames = []struct {
@@ -92,5 +96,18 @@ func TestvalidateRepoName(t *testing.T) {
 			}
 
 		}
+	}
+}
+func TestgetAuthConfig(t *testing.T) {
+	ctx := context.Background()
+	Index:= *registrytypes.IndexInfo{
+		Name:  "myregistrydomain.com:5000",
+		Mirrors: {},
+		Secure:  false,
+		Official:  false,
+	},
+	authconfig,err :=getAuthConfig(ctx, Index )
+	if err != nil {
+		t.Errorf("%#v is invalid authconfig", authconfig)
 	}
 }
