@@ -23,7 +23,7 @@ var inspectCmd = cli.Command{
 
 		name := c.Args().First()
 		a := getAuthInfo(c)
-		imgInspect, _, err := docker.GetImageData(a, name)
+		mfListDigest, imgInspect, _, err := docker.GetImageData(a, name)
 		if err != nil {
 			logrus.Fatal(err)
 		}
@@ -36,7 +36,7 @@ var inspectCmd = cli.Command{
 			return
 		}
 		// output basic informative details about the image
-		if len(imgInspect) == 1 {
+		if mfListDigest == "" {
 			// this is a basic single manifest
 			fmt.Printf("%s: manifest type: %s\n", name, imgInspect[0].MediaType)
 			fmt.Printf("      Digest: %s\n", imgInspect[0].Digest)
@@ -48,8 +48,13 @@ var inspectCmd = cli.Command{
 			}
 			return
 		}
-		// more than one response--this is a manifest list
-		fmt.Printf("%s is a manifest list containing the following %d manifest references:\n", name, len(imgInspect))
+
+		// we have a manifest list so show the parent and all nested images
+		fmt.Printf("Repository: %s\n", name)
+		fmt.Printf("    Digest: %s\n", mfListDigest)
+		fmt.Printf(" Manifests: %d\n", len(imgInspect))
+		fmt.Printf("\n")
+
 		for i, img := range imgInspect {
 			fmt.Printf("%d    Mfst Type: %s\n", i+1, img.MediaType)
 			fmt.Printf("%d       Digest: %s\n", i+1, img.Digest)

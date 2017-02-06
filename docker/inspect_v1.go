@@ -32,16 +32,16 @@ type v1ManifestFetcher struct {
 	session    *registry.Session
 }
 
-func (mf *v1ManifestFetcher) Fetch(ctx context.Context, ref reference.Named) ([]types.ImageInspect, error) {
+func (mf *v1ManifestFetcher) Fetch(ctx context.Context, ref reference.Named) (string, []types.ImageInspect, error) {
 	if _, isCanonical := ref.(reference.Canonical); isCanonical {
 		// Allowing fallback, because HTTPS v1 is before HTTP v2
-		return nil, fallbackError{
+		return "", nil, fallbackError{
 			err: dockerdistribution.ErrNoSupport{errors.New("Cannot pull by digest with v1 registry")},
 		}
 	}
 	tlsConfig, err := mf.service.TLSConfig(mf.repoInfo.Index.Name)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 	// Adds Docker-specific headers as well as user-specified headers (metaHeaders)
 	tr := transport.NewTransport(
@@ -54,23 +54,23 @@ func (mf *v1ManifestFetcher) Fetch(ctx context.Context, ref reference.Named) ([]
 	v1Endpoint, err := mf.endpoint.ToV1Endpoint(dockerversion.DockerUserAgent(nil), nil)
 	if err != nil {
 		logrus.Debugf("Could not get v1 endpoint: %v", err)
-		return nil, fallbackError{err: err}
+		return "", nil, fallbackError{err: err}
 	}
 	mf.session, err = registry.NewSession(client, &mf.authConfig, v1Endpoint)
 	if err != nil {
 		logrus.Debugf("Fallback from error: %s", err)
-		return nil, fallbackError{err: err}
+		return "", nil, fallbackError{err: err}
 	}
 
 	imgsInspect, err := mf.fetchWithSession(ctx, ref)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 	if len(imgsInspect) > 1 {
-		return nil, fmt.Errorf("Found more than one image in V1 fetch!? %v", imgsInspect)
+		return "", nil, fmt.Errorf("Found more than one image in V1 fetch!? %v", imgsInspect)
 	}
 	imgsInspect[0].MediaType = schema1.MediaTypeManifest
-	return imgsInspect, nil
+	return "", imgsInspect, nil
 }
 
 func (mf *v1ManifestFetcher) fetchWithSession(ctx context.Context, ref reference.Named) ([]types.ImageInspect, error) {

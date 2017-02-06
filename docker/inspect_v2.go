@@ -40,48 +40,49 @@ type manifestInfo struct {
 	jsonBytes   []byte
 }
 
-func (mf *v2ManifestFetcher) Fetch(ctx context.Context, ref reference.Named) ([]types.ImageInspect, error) {
+func (mf *v2ManifestFetcher) Fetch(ctx context.Context, ref reference.Named) (string, []types.ImageInspect, error) {
 	var err error
 
 	mf.repo, mf.confirmedV2, err = dockerdistribution.NewV2Repository(ctx, mf.repoInfo, mf.endpoint, nil, &mf.authConfig, "pull")
 	if err != nil {
 		logrus.Debugf("Error getting v2 registry: %v", err)
-		return nil, err
+		return "", nil, err
 	}
 
-	images, err := mf.fetchWithRepository(ctx, ref)
+	mfListDigest, images, err := mf.fetchWithRepository(ctx, ref)
 	if err != nil {
 		if _, ok := err.(fallbackError); ok {
-			return nil, err
+			return "", nil, err
 		}
 		if continueOnError(err) {
 			logrus.Errorf("Error trying v2 registry: %v", err)
-			return nil, fallbackError{err: err, confirmedV2: mf.confirmedV2, transportOK: true}
+			return "", nil, fallbackError{err: err, confirmedV2: mf.confirmedV2, transportOK: true}
 		}
 	}
 	for _, img := range images {
 		img.MediaType = schema2.MediaTypeManifest
 	}
-	return images, err
+	return mfListDigest, images, err
 }
 
-func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref reference.Named) ([]types.ImageInspect, error) {
+func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref reference.Named) (string, []types.ImageInspect, error) {
 	var (
-		manifest    distribution.Manifest
-		tagOrDigest string // Used for logging/progress only
-		tagList     = []string{}
-		imageList   = []types.ImageInspect{}
+		manifest     distribution.Manifest
+		mfListDigest string // Digest of the manifest list, if we have one
+		tagOrDigest  string // Used for logging/progress only
+		tagList      = []string{}
+		imageList    = []types.ImageInspect{}
 	)
 
 	manSvc, err := mf.repo.Manifests(ctx)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	if _, isTagged := ref.(reference.NamedTagged); !isTagged {
 		ref, err = reference.WithTag(ref, reference.DefaultTag)
 		if err != nil {
-			return nil, err
+			return "", nil, err
 		}
 	}
 
@@ -91,21 +92,21 @@ func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref refere
 		// all registry versions.
 		manifest, err = manSvc.Get(ctx, "", distribution.WithTag(tagged.Tag()))
 		if err != nil {
-			return nil, allowV1Fallback(err)
+			return "", nil, allowV1Fallback(err)
 		}
 		tagOrDigest = tagged.Tag()
 	} else if digested, isDigested := ref.(reference.Canonical); isDigested {
 		manifest, err = manSvc.Get(ctx, digested.Digest())
 		if err != nil {
-			return nil, err
+			return "", nil, err
 		}
 		tagOrDigest = digested.Digest().String()
 	} else {
-		return nil, fmt.Errorf("internal error: reference has neither a tag nor a digest: %s", ref.String())
+		return "", nil, fmt.Errorf("internal error: reference has neither a tag nor a digest: %s", ref.String())
 	}
 
 	if manifest == nil {
-		return nil, fmt.Errorf("image manifest does not exist for tag or digest %q", tagOrDigest)
+		return "", nil, fmt.Errorf("image manifest does not exist for tag or digest %q", tagOrDigest)
 	}
 
 	// If manSvc.Get succeeded, we can be confident that the registry on
@@ -116,7 +117,7 @@ func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref refere
 	if err != nil {
 		// If this repository doesn't exist on V2, we should
 		// permit a fallback to V1.
-		return nil, allowV1Fallback(err)
+		return "", nil, allowV1Fallback(err)
 	}
 
 	var (
@@ -132,7 +133,7 @@ func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref refere
 		mfInfos = append(mfInfos, mfInfo)
 		mediaType = append(mediaType, schema1.MediaTypeManifest)
 		if err != nil {
-			return nil, err
+			return "", nil, err
 		}
 	case *schema2.DeserializedManifest:
 		image, mfInfo, err := mf.pullSchema2(ctx, ref, v)
@@ -140,22 +141,22 @@ func (mf *v2ManifestFetcher) fetchWithRepository(ctx context.Context, ref refere
 		mfInfos = append(mfInfos, mfInfo)
 		mediaType = append(mediaType, schema2.MediaTypeManifest)
 		if err != nil {
-			return nil, err
+			return "", nil, err
 		}
 	case *manifestlist.DeserializedManifestList:
-		images, mfInfos, mediaType, err = mf.pullManifestList(ctx, ref, v)
+		mfListDigest, images, mfInfos, mediaType, err = mf.pullManifestList(ctx, ref, v)
 		if err != nil {
-			return nil, err
+			return "", nil, err
 		}
 	default:
-		return nil, errors.New("unsupported manifest format")
+		return "", nil, errors.New("unsupported manifest format")
 	}
 
 	for idx, img := range images {
 		imgReturn := makeImageInspect(img, tagOrDigest, mfInfos[idx], mediaType[idx], tagList)
 		imageList = append(imageList, *imgReturn)
 	}
-	return imageList, nil
+	return mfListDigest, imageList, nil
 }
 
 func (mf *v2ManifestFetcher) pullSchema1(ctx context.Context, ref reference.Named, unverifiedManifest *schema1.SignedManifest) (img *image.Image, mfInfo manifestInfo, err error) {
@@ -452,7 +453,7 @@ func schema2ManifestDigest(ref reference.Named, mfst distribution.Manifest) (dig
 
 // pullManifestList handles "manifest lists" which point to various
 // platform-specifc manifests.
-func (mf *v2ManifestFetcher) pullManifestList(ctx context.Context, ref reference.Named, mfstList *manifestlist.DeserializedManifestList) ([]*image.Image, []manifestInfo, []string, error) {
+func (mf *v2ManifestFetcher) pullManifestList(ctx context.Context, ref reference.Named, mfstList *manifestlist.DeserializedManifestList) (string, []*image.Image, []manifestInfo, []string, error) {
 	var (
 		imageList = []*image.Image{}
 		mfInfos   = []manifestInfo{}
@@ -460,26 +461,26 @@ func (mf *v2ManifestFetcher) pullManifestList(ctx context.Context, ref reference
 	)
 	manifestListDigest, err := schema2ManifestDigest(ref, mfstList)
 	if err != nil {
-		return nil, nil, nil, err
+		return "", nil, nil, nil, err
 	}
 	logrus.Debugf("Pulling manifest list entries for ML digest %v", manifestListDigest)
 
 	for _, manifestDescriptor := range mfstList.Manifests {
 		manSvc, err := mf.repo.Manifests(ctx)
 		if err != nil {
-			return nil, nil, nil, err
+			return "", nil, nil, nil, err
 		}
 
 		thisDigest := manifestDescriptor.Digest
 		thisPlatform := manifestDescriptor.Platform
 		manifest, err := manSvc.Get(ctx, thisDigest)
 		if err != nil {
-			return nil, nil, nil, err
+			return "", nil, nil, nil, err
 		}
 
 		manifestRef, err := reference.WithDigest(ref, thisDigest)
 		if err != nil {
-			return nil, nil, nil, err
+			return "", nil, nil, nil, err
 		}
 
 		switch v := manifest.(type) {
@@ -490,7 +491,7 @@ func (mf *v2ManifestFetcher) pullManifestList(ctx context.Context, ref reference
 			mfInfos = append(mfInfos, mfInfo)
 			mediaType = append(mediaType, schema1.MediaTypeManifest)
 			if err != nil {
-				return nil, nil, nil, err
+				return "", nil, nil, nil, err
 			}
 		case *schema2.DeserializedManifest:
 			img, mfInfo, err := mf.pullSchema2(ctx, manifestRef, v)
@@ -499,12 +500,12 @@ func (mf *v2ManifestFetcher) pullManifestList(ctx context.Context, ref reference
 			mfInfos = append(mfInfos, mfInfo)
 			mediaType = append(mediaType, schema2.MediaTypeManifest)
 			if err != nil {
-				return nil, nil, nil, err
+				return "", nil, nil, nil, err
 			}
 		default:
-			return nil, nil, nil, errors.New("unsupported manifest format")
+			return "", nil, nil, nil, errors.New("unsupported manifest format")
 		}
 	}
 
-	return imageList, mfInfos, mediaType, err
+	return manifestListDigest.String(), imageList, mfInfos, mediaType, err
 }

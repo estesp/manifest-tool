@@ -70,7 +70,7 @@ func PutManifestList(a *types.AuthInfo, yamlInput types.YAMLInput) (string, erro
 		if !isValidOSArch(img.Platform.OS, img.Platform.Architecture) {
 			return "", fmt.Errorf("Manifest entry for image %s has unsupported os/arch combination: %s/%s", img.Image, img.Platform.OS, img.Platform.Architecture)
 		}
-		mfstData, repoInfo, err := GetImageData(a, img.Image)
+		_, mfstData, repoInfo, err := GetImageData(a, img.Image)
 		if err != nil {
 			return "", fmt.Errorf("Inspect of image %q failed with error: %v", img.Image, err)
 		}
