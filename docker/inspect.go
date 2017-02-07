@@ -85,7 +85,7 @@ func (f fallbackError) Error() string {
 }
 
 type manifestFetcher interface {
-	Fetch(ctx context.Context, ref reference.Named) ([]types.ImageInspect, error)
+	Fetch(ctx context.Context, ref reference.Named) (string, []types.ImageInspect, error)
 }
 
 func validateName(name string) error {
@@ -151,24 +151,24 @@ func checkHTTPRedirect(req *http.Request, via []*http.Request) error {
 }
 
 // GetImageData takes registry authentication information and a name of the image to return information about
-func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *registry.RepositoryInfo, error) {
+func GetImageData(a *types.AuthInfo, name string) (string, []types.ImageInspect, *registry.RepositoryInfo, error) {
 	if err := validateName(name); err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	ref, err := reference.ParseNamed(name)
 	if err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	repoInfo, err := registry.ParseRepositoryInfo(ref)
 	if err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	authConfig, err := getAuthConfig(a, repoInfo.Index)
 	if err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	if err := validateRepoName(repoInfo.Name()); err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	options := registry.ServiceOptions{}
 	options.InsecureRegistries = append(options.InsecureRegistries, "0.0.0.0/0")
@@ -176,7 +176,7 @@ func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *regist
 
 	endpoints, err := registryService.LookupPullEndpoints(repoInfo.Hostname())
 	if err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	logrus.Debugf("endpoints: %v", endpoints)
 
@@ -184,6 +184,7 @@ func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *regist
 		ctx                    = context.Background()
 		lastErr                error
 		discardNoSupportErrors bool
+		mfListDigest           string
 		foundImages            []types.ImageInspect
 		confirmedV2            bool
 		confirmedTLSRegistries = make(map[string]struct{})
@@ -194,11 +195,11 @@ func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *regist
 
 		v1endpoint, err := endpoint.ToV1Endpoint(dockerversion.DockerUserAgent(nil), nil)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, nil, err
 		}
 		if _, err := v1endpoint.Ping(); err != nil {
 			if strings.Contains(err.Error(), "timeout") {
-				return nil, nil, err
+				return "", nil, nil, err
 			}
 			continue
 		}
@@ -223,7 +224,7 @@ func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *regist
 			continue
 		}
 
-		if foundImages, err = fetcher.Fetch(ctx, ref); err != nil {
+		if mfListDigest, foundImages, err = fetcher.Fetch(ctx, ref); err != nil {
 			// Was this fetch cancelled? If so, don't try to fall back.
 			fallback := false
 			select {
@@ -252,17 +253,17 @@ func GetImageData(a *types.AuthInfo, name string) ([]types.ImageInspect, *regist
 				continue
 			}
 			logrus.Errorf("Not continuing with pull after error: %v", err)
-			return nil, nil, err
+			return "", nil, nil, err
 		}
 
-		return foundImages, repoInfo, nil
+		return mfListDigest, foundImages, repoInfo, nil
 	}
 
 	if lastErr == nil {
 		lastErr = fmt.Errorf("no endpoints found for %s", ref.String())
 	}
 
-	return nil, nil, lastErr
+	return "", nil, nil, lastErr
 }
 
 func newManifestFetcher(endpoint registry.APIEndpoint, repoInfo *registry.RepositoryInfo, authConfig engineTypes.AuthConfig, registryService registry.Service) (manifestFetcher, error) {
