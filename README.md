@@ -194,8 +194,8 @@ $ ./manifest-tool push from-args \
 On the command line you specify the platform os/arch pairs, a template for finding the source images for each input platform pair, and a target image name.
 
 Specifically:
- - `--platforms` specifies which platforms you want to push for in the form OS/ARCH,OS/ARCH,...
- - `--template` specifies the image repo:tag source for inputs by replacing the placeholders `OS` and `ARCH` with the inputs from `--platforms`.
+ - `--platforms` specifies which platforms you want to push for in the form OS/ARCH[/VARIANT],OS/ARCH[/VARIANT],...
+ - `--template` specifies the image repo:tag source for inputs by replacing the placeholders `OS`, `ARCH` and `VARIANT` with the inputs from `--platforms`.
  - `--target` specifies the target image repo:tag that will be the manifest list entry in the registry.
 
 ##### Functional Changelog for Push/Create

@@ -93,15 +93,20 @@ var pushCmd = cli.Command{
 
 				for _, platform := range platformList {
 					osArchArr := strings.Split(platform, "/")
-					if len(osArchArr) != 2 {
-						logrus.Fatal("The --platforms argument must be a string slice where one value is of the form 'os/arch'")
+					if len(osArchArr) < 2 || len(osArchArr) > 3 {
+						logrus.Fatal("The --platforms argument must be a string slice where one value is of the form 'os/arch/[variant]'")
 					}
 					os, arch := osArchArr[0], osArchArr[1]
+					variant := ""
+					if len(osArchArr) == 3 {
+						variant = osArchArr[2]
+					}
 					srcImages = append(srcImages, types.ManifestEntry{
-						Image: strings.Replace(strings.Replace(templ, "ARCH", arch, 1), "OS", os, 1),
+						Image: strings.Replace(strings.Replace(strings.Replace(templ, "ARCH", arch, 1), "OS", os, 1), "VARIANT", variant, 1),
 						Platform: manifestlist.PlatformSpec{
 							OS:           os,
 							Architecture: arch,
+							Variant:      variant,
 						},
 					})
 				}
