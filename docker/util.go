@@ -19,6 +19,7 @@ var validOSArch = map[string]bool{
 	"linux/amd64":     true,
 	"linux/arm":       true,
 	"linux/arm/v5":    true,
+	"linux/arm/v6":    true,
 	"linux/arm/v7":    true,
 	"linux/arm64":     true,
 	"linux/arm64/v8":  true,

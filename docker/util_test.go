@@ -21,6 +21,7 @@ func TestValidOSArch(t *testing.T) {
 		{arch: "linux", os: "amd64"},
 		{arch: "linux", os: "arm"},
 		{arch: "linux", os: "arm", variant: "v5"},
+		{arch: "linux", os: "arm", variant: "v6"},
 		{arch: "linux", os: "arm", variant: "v7"},
 		{arch: "linux", os: "arm64"},
 		{arch: "linux", os: "arm64", variant: "v8"},
