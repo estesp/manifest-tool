@@ -20,7 +20,6 @@ type ImageInspect struct {
 	Config          *container.Config
 	Architecture    string
 	Os              string
-	Variant         string
 	OSVersion       string
 	OSFeatures      []string
 	Layers          []string
