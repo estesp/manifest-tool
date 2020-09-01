@@ -6,8 +6,9 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
-	"github.com/estesp/manifest-tool/docker"
 	"github.com/sirupsen/logrus"
+
+	"manifest-tool/docker"
 )
 
 var inspectCmd = cli.Command{

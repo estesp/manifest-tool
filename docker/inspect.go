@@ -23,9 +23,10 @@ import (
 	"github.com/docker/docker/distribution"
 	"github.com/docker/docker/image"
 	"github.com/docker/docker/registry"
-	"github.com/estesp/manifest-tool/types"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
+
+	"manifest-tool/types"
 )
 
 const (

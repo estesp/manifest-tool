@@ -19,7 +19,7 @@ import (
 	"github.com/opencontainers/go-digest"
 	"github.com/sirupsen/logrus"
 
-	"github.com/estesp/manifest-tool/types"
+	"manifest-tool/types"
 )
 
 // we will store up a list of blobs we must ask the registry

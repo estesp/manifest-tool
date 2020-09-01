@@ -18,10 +18,10 @@ import (
 	"github.com/docker/docker/image"
 	"github.com/docker/docker/image/v1"
 	"github.com/docker/docker/registry"
-	"github.com/estesp/manifest-tool/types"
 	"github.com/opencontainers/go-digest"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
+	"manifest-tool/types"
 )
 
 type v2ManifestFetcher struct {

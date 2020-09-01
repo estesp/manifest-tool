@@ -19,7 +19,7 @@ ifeq ($(INTERACTIVE), 1)
 endif
 DOCKER_RUN_DOCKER := $(DOCKER_RUN) -v $(shell pwd):/go/src/github.com/estesp/manifest-tool -w /go/src/github.com/estesp/manifest-tool "$(DOCKER_IMAGE)"
 
-all: build
+all: binary
 
 build:
 	$(DOCKER_RUN) -v $(shell pwd):/go/src/github.com/estesp/manifest-tool -w /go/src/github.com/estesp/manifest-tool golang:1.13 /bin/bash -c "\
@@ -27,14 +27,13 @@ build:
 
 # Target to build a dynamically linked binary
 binary:
-	go build -ldflags "-X main.gitCommit=${COMMIT}" -o manifest-tool github.com/estesp/manifest-tool
+	go build -ldflags "-X main.gitCommit=${COMMIT}"
 
 # Target to build a statically linked binary
 static:
 	GO_EXTLINK_ENABLED=0 CGO_ENABLED=0 go build \
 	   -ldflags "-w -extldflags -static -X main.gitCommit=${COMMIT}" \
-	   -tags netgo -installsuffix netgo \
-	   -o manifest-tool github.com/estesp/manifest-tool
+	   -tags netgo -installsuffix netgo
 
 build-container:
 	docker build ${DOCKER_BUILD_ARGS} -t "$(DOCKER_IMAGE)" .
