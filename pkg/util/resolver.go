@@ -7,12 +7,12 @@ import (
 
 	"github.com/containerd/containerd/remotes"
 	"github.com/containerd/containerd/remotes/docker"
+	"github.com/containerd/containerd/remotes/docker/config"
 	auth "github.com/deislabs/oras/pkg/auth/docker"
 	"github.com/sirupsen/logrus"
 )
 
 func NewResolver(username, password string, insecure, plainHTTP bool, configs ...string) remotes.Resolver {
-
 	opts := docker.ResolverOptions{
 		PlainHTTP: plainHTTP,
 	}
@@ -30,6 +30,16 @@ func NewResolver(username, password string, insecure, plainHTTP bool, configs ..
 		opts.Credentials = func(hostName string) (string, string, error) {
 			return username, password, nil
 		}
+		opts.Hosts = config.ConfigureHosts(context.Background(), config.HostOptions{
+			Credentials: func(host string) (string, string, error) {
+				// If host doesn't match...
+				// Only one host
+				return username, password, nil
+			},
+			DefaultTLS: &tls.Config{
+				InsecureSkipVerify: insecure,
+			},
+		})
 		return docker.NewResolver(opts)
 	}
 	cli, err := auth.NewClient(configs...)
