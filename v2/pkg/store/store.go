@@ -18,7 +18,7 @@ var (
 )
 
 type labelStore struct {
-	l      sync.Mutex
+	l      sync.RWMutex
 	labels map[digest.Digest]map[string]string
 }
 
@@ -87,10 +87,12 @@ func (m *MemoryStore) Delete(ctx context.Context, d digest.Digest) error {
 
 // Info returns the info for a specific digest
 func (m *MemoryStore) Info(ctx context.Context, d digest.Digest) (ccontent.Info, error) {
+	m.labels.l.RLock()
 	info := ccontent.Info{
 		Digest: d,
 		Labels: m.labels.labels[d],
 	}
+	m.labels.l.Unlock()
 	return info, nil
 }
 
