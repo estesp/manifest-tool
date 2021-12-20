@@ -92,7 +92,7 @@ func (m *MemoryStore) Info(ctx context.Context, d digest.Digest) (ccontent.Info,
 		Digest: d,
 		Labels: m.labels.labels[d],
 	}
-	m.labels.l.Unlock()
+	m.labels.l.RUnlock()
 	return info, nil
 }
 
