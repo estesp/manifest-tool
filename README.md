@@ -6,7 +6,7 @@ references located in an OCIv1 or Docker v2.2 compatible container registry.
 While several other tools include more complete capabilities to view and manipulate the
 *manifest* objects associated with container images and artifacts, `manifest-tool` was created
 as one of the first command line tools capable of assembling "manifest lists" (Docker v2.2), now
-more commonly known as "indexes" in the OCIv1 image specification. [**Manifest lists**](https://github.com/distribution/distribution/blob/main/docs/spec/manifest-v2-2.md#manifest-list) or
+more commonly known as "indexes" in the OCIv1 image specification. [**Manifest lists**](https://github.com/distribution/distribution/blob/main/docs/content/spec/manifest-v2-2.md#manifest-list) or
 [**indexes**](https://github.com/opencontainers/image-spec/blob/main/image-index.md) exist for
 the purpose of combining an array of architecture and platform specific container image manifests
 under a single reference. This allows a container runtime to select the appropriate index
