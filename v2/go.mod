@@ -5,10 +5,10 @@ go 1.21
 toolchain go1.22.1
 
 require (
-	github.com/containerd/containerd v1.7.15
-	github.com/docker/cli v25.0.5+incompatible
+	github.com/containerd/containerd v1.7.19
+	github.com/docker/cli v27.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
-	github.com/docker/docker v25.0.5+incompatible
+	github.com/docker/docker v27.0.1+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
@@ -21,15 +21,16 @@ require (
 
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24 // indirect
-	github.com/Microsoft/hcsshim v0.11.4 // indirect
+	github.com/containerd/errdefs v0.1.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
+	github.com/containerd/platforms v0.2.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/klauspost/compress v1.16.0 // indirect
+	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
@@ -42,7 +43,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.25.0 // indirect
 	go.opentelemetry.io/otel/trace v1.25.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
 	google.golang.org/grpc v1.62.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
