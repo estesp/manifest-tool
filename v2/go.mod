@@ -8,7 +8,7 @@ require (
 	github.com/containerd/containerd v1.7.19
 	github.com/docker/cli v27.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
-	github.com/docker/docker v27.0.1+incompatible
+	github.com/docker/docker v27.1.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0
