@@ -38,7 +38,9 @@ var inspectCmd = &cli.Command{
 			logrus.Fatal(err)
 		}
 		if _, ok := imageRef.(reference.NamedTagged); !ok {
-			logrus.Fatal("image reference must include a tag; manifest-tool does not default to 'latest'")
+			if _, ok := imageRef.(reference.Digested); !ok {
+				logrus.Fatal("image reference must include a tag or a digest; manifest-tool does not default to 'latest'")
+			}
 		}
 
 		if c.Bool("expand-config") && !c.Bool("raw") {
