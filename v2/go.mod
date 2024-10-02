@@ -5,7 +5,8 @@ go 1.21
 toolchain go1.22.1
 
 require (
-	github.com/containerd/containerd v1.7.19
+	github.com/containerd/containerd v1.7.22
+	github.com/containerd/errdefs v0.1.0
 	github.com/docker/cli v27.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v27.1.1+incompatible
@@ -21,7 +22,6 @@ require (
 
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24 // indirect
-	github.com/containerd/errdefs v0.1.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v0.2.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
