@@ -15,6 +15,12 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
+const (
+	fmtCantResolvePath   = "Can't resolve path to %q: %v"
+	fmtCantReadYAML      = "Can't read YAML file %q: %v"
+	fmtCantUnmarshalYAML = "Can't unmarshal YAML file %q: %v"
+)
+
 var pushCmd = &cli.Command{
 	Name:  "push",
 	Usage: "push a manifest list/OCI index entry to a registry with provided image details",
@@ -41,15 +47,15 @@ var pushCmd = &cli.Command{
 
 				filename, err := filepath.Abs(filePath)
 				if err != nil {
-					logrus.Fatalf(fmt.Sprintf("Can't resolve path to %q: %v", filePath, err))
+					logrus.Fatal(fmt.Sprintf(fmtCantResolvePath, filePath, err))
 				}
 				yamlFile, err := os.ReadFile(filename)
 				if err != nil {
-					logrus.Fatalf(fmt.Sprintf("Can't read YAML file %q: %v", filePath, err))
+					logrus.Fatal(fmt.Sprintf(fmtCantReadYAML, filePath, err))
 				}
 				err = yaml.Unmarshal(yamlFile, &yamlInput)
 				if err != nil {
-					logrus.Fatalf(fmt.Sprintf("Can't unmarshal YAML file %q: %v", filePath, err))
+					logrus.Fatal(fmt.Sprintf(fmtCantUnmarshalYAML, filePath, err))
 				}
 
 				manifestType := types.Docker
