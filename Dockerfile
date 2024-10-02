@@ -1,4 +1,4 @@
-FROM golang:1.22
+FROM golang:1.23
 
 RUN go install golang.org/x/tools/cmd/cover@latest \
     && go install golang.org/x/lint/golint@latest
