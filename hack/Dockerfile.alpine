@@ -4,13 +4,15 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 ARG BUILDPLATFORM
 ARG BUILDARCH
+ARG GOPROXY
 RUN apk add bash git
 
 ENV GOOS linux
 ENV GOARCH $TARGETARCH
 ENV GOARMV $TARGETVARIANT
+ENV GO_PROXY $GOPROXY
 # Get GCR credential helper
-RUN GOARM=${GOARMV#v} go install github.com/GoogleCloudPlatform/docker-credential-gcr@latest
+RUN GOARM=${GOARMV#v} go install github.com/GoogleCloudPlatform/docker-credential-gcr/v2@latest
 
 # Get Amazon ECR credential helper
 RUN GOARM=${GOARMV#v} go install github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login@latest
@@ -25,7 +27,7 @@ WORKDIR /manifest-tool
 COPY  . /manifest-tool
 RUN /manifest-tool/hack/makestatic.sh $TARGETARCH ${TARGETVARIANT#v}
 
-FROM --platform=$TARGETPLATFORM alpine:3.19.2
+FROM --platform=$TARGETPLATFORM alpine:3.20.3
 COPY --from=bld /manifest-tool/manifest-tool /manifest-tool
 COPY --from=bld /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=bld --chown=0:0 /go/bin/docker-credential-gcr /usr/bin/docker-credential-gcloud
