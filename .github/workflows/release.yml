@@ -43,7 +43,7 @@ jobs:
         working-directory: src/github.com/estesp/manifest-tool
 
       - name: Save release notes
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: mtool-release-notes
           path: src/github.com/estesp/manifest-tool/release-notes.md
@@ -86,7 +86,7 @@ jobs:
         working-directory: src/github.com/estesp/manifest-tool
 
       - name: Save build binaries
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: manifest-tool-binaries
           path: src/github.com/estesp/manifest-tool/*.tar.gz*
