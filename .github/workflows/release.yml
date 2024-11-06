@@ -8,7 +8,7 @@ name: manifest-tool Release
 jobs:
   check:
     name: Check Signed Tag
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     outputs:
       stringver: ${{ steps.contentrel.outputs.stringver }}
@@ -50,7 +50,7 @@ jobs:
 
   build:
     name: Build binaries
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [check]
     timeout-minutes: 10
 
@@ -93,7 +93,7 @@ jobs:
 
   containers-lx:
     name: Build and push Linux release images
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [check]
     timeout-minutes: 30
 
@@ -187,7 +187,7 @@ jobs:
 
   container-assemble:
     name: Assemble and push multi-platform release image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [containers-lx, containers-win]
     timeout-minutes: 15
 
@@ -242,7 +242,7 @@ jobs:
 
   release:
     name: Create manifest-tool Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     needs: [build, check]
 
