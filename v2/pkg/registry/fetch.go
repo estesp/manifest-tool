@@ -3,7 +3,7 @@ package registry
 import (
 	"context"
 
-	"github.com/containerd/containerd/remotes"
+	"github.com/containerd/containerd/v2/core/remotes"
 	"github.com/docker/distribution/reference"
 	"github.com/estesp/manifest-tool/v2/pkg/store"
 	"github.com/estesp/manifest-tool/v2/pkg/types"

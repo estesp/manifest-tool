@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/containerd/containerd/remotes"
+	"github.com/containerd/containerd/v2/core/remotes"
 	"github.com/docker/distribution/reference"
 	digest "github.com/opencontainers/go-digest"
 )

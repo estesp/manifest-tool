@@ -9,8 +9,8 @@ import (
 	"github.com/estesp/manifest-tool/v2/pkg/store"
 	"github.com/estesp/manifest-tool/v2/pkg/types"
 
-	"github.com/containerd/containerd/images"
-	"github.com/containerd/containerd/remotes"
+	"github.com/containerd/containerd/v2/core/images"
+	"github.com/containerd/containerd/v2/core/remotes"
 	"github.com/docker/distribution/manifest/manifestlist"
 	"github.com/docker/distribution/reference"
 	"github.com/opencontainers/go-digest"
