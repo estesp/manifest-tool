@@ -25,6 +25,9 @@ PLATFORMS=(
   # ARM; 32bit and 64bit
   linux/arm/5 linux/arm/6 linux/arm/7 linux/arm64
 
+  # LoongArch
+  linux/loong64
+
   # MIPS
   linux/mips64le
 
