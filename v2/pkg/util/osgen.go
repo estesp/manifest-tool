@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 // This program generates oslist.go. It can be invoked by running
@@ -10,6 +11,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 	"text/template"
 	"time"
@@ -51,6 +53,11 @@ func main() {
 		archlist[i] = k
 		i++
 	}
+
+	// Make the output deterministic because iteration order over Go map keys
+	// is random.
+	sort.Strings(oslist)
+	sort.Strings(archlist)
 
 	packageTemplate.Execute(f, struct {
 		Timestamp time.Time
