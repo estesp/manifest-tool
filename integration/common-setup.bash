@@ -11,10 +11,10 @@ function _common_setup() {
 
 function _load_test_images() {
 
-    "${RUNTIME_TOOL}" pull amd64/alpine:latest
-    "${RUNTIME_TOOL}" pull arm64v8/alpine:latest
-    "${RUNTIME_TOOL}" pull ppc64le/alpine:latest
-    "${RUNTIME_TOOL}" pull s390x/alpine:latest
+    "${RUNTIME_TOOL}" pull --platform linux/amd64 amd64/alpine:latest
+    "${RUNTIME_TOOL}" pull --platform linux/arm64/v8 arm64v8/alpine:latest
+    "${RUNTIME_TOOL}" pull --platform linux/ppc64le ppc64le/alpine:latest
+    "${RUNTIME_TOOL}" pull --platform linux/s390x s390x/alpine:latest
     "${RUNTIME_TOOL}" tag amd64/alpine:latest ${HOSTNM}/alpine:amd64
     "${RUNTIME_TOOL}" tag ppc64le/alpine:latest ${HOSTNM}/alpine:ppc64le
     "${RUNTIME_TOOL}" tag arm64v8/alpine:latest ${HOSTNM}/alpine:arm64
