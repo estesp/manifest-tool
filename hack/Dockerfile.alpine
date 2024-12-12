@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.23.3-alpine AS bld
+FROM --platform=$BUILDPLATFORM golang:1.23.4-alpine AS bld
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -27,7 +27,7 @@ WORKDIR /manifest-tool
 COPY  . /manifest-tool
 RUN /manifest-tool/hack/makestatic.sh $TARGETARCH ${TARGETVARIANT#v}
 
-FROM --platform=$TARGETPLATFORM alpine:3.20.3
+FROM --platform=$TARGETPLATFORM alpine:3.21.0
 COPY --from=bld /manifest-tool/manifest-tool /manifest-tool
 COPY --from=bld /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=bld --chown=0:0 /go/bin/docker-credential-gcr /usr/bin/docker-credential-gcloud
