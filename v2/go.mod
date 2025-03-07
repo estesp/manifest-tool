@@ -2,18 +2,17 @@ module github.com/estesp/manifest-tool/v2
 
 go 1.22.0
 
-toolchain go1.23.3
+toolchain go1.24.1
 
 require (
-	github.com/containerd/containerd/v2 v2.0.0
+	github.com/containerd/containerd/v2 v2.0.2
 	github.com/containerd/errdefs v1.0.0
 	github.com/docker/cli v27.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v27.1.1+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/opencontainers/image-spec v1.1.0
-	github.com/pkg/errors v0.9.1
+	github.com/opencontainers/image-spec v1.1.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli/v2 v2.27.5
 	gopkg.in/yaml.v3 v3.0.1
@@ -23,7 +22,7 @@ require (
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6 // indirect
 	github.com/containerd/log v0.1.0 // indirect
-	github.com/containerd/platforms v1.0.0-rc.0 // indirect
+	github.com/containerd/platforms v1.0.0-rc.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -35,6 +34,7 @@ require (
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/moby/locker v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.56.0 // indirect

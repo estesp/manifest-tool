@@ -3,6 +3,7 @@ package store
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"sync"
 	"time"
@@ -11,7 +12,6 @@ import (
 	"github.com/containerd/errdefs"
 	"github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-	"github.com/pkg/errors"
 	"oras.land/oras-go/v2/content/memory"
 )
 
@@ -264,16 +264,16 @@ func (w *memoryWriter) Commit(ctx context.Context, size int64, expected digest.D
 	}
 
 	if w.buffer == nil {
-		return errors.Wrap(errdefs.ErrFailedPrecondition, "cannot commit on closed writer")
+		return fmt.Errorf("cannot commit on closed writer: %w", errdefs.ErrFailedPrecondition)
 	}
 	content := w.buffer.Bytes()
 	w.buffer = nil
 
 	if size > 0 && size != int64(len(content)) {
-		return errors.Wrapf(errdefs.ErrFailedPrecondition, "unexpected commit size %d, expected %d", len(content), size)
+		return fmt.Errorf("unexpected commit size %d, expected %d: %w", len(content), size, errdefs.ErrFailedPrecondition)
 	}
 	if dgst := w.digester.Digest(); expected != "" && expected != dgst {
-		return errors.Wrapf(errdefs.ErrFailedPrecondition, "unexpected commit digest %s, expected %s", dgst, expected)
+		return fmt.Errorf("unexpected commit digest %s, expected %s: %w", dgst, expected, errdefs.ErrFailedPrecondition)
 	}
 
 	_ = w.store.Push(context.Background(), w.desc, bytes.NewReader(content))
