@@ -16,7 +16,6 @@ import (
 	"github.com/opencontainers/go-digest"
 	specs "github.com/opencontainers/image-spec/specs-go"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -28,11 +27,11 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 		if man.PushRef {
 			ref, err := reference.WithDigest(baseRef, man.Descriptor.Digest)
 			if err != nil {
-				return "", 0, errors.Wrapf(err, "Error parsing reference for target manifest component push: %s", m.Reference.String())
+				return "", 0, fmt.Errorf("Error parsing reference for target manifest component push: %s: %w", m.Reference.String(), err)
 			}
 			err = push(ref, man.Descriptor, m.Resolver, ms)
 			if err != nil {
-				return "", 0, errors.Wrapf(err, "Error pushing target manifest component reference: %s", ref.String())
+				return "", 0, fmt.Errorf("Error pushing target manifest component reference: %s: %w", ref.String(), err)
 			}
 			logrus.Infof("pushed manifest component reference (%s) to target namespace: %s", man.Descriptor.Digest.String(), ref.String())
 		}
@@ -40,7 +39,7 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 	// build the manifest list/index entry to be pushed and save it in the content store
 	desc, indexJSON, err := buildManifest(m)
 	if err != nil {
-		return "", 0, errors.Wrap(err, "Error creating manifest list/index JSON")
+		return "", 0, fmt.Errorf("Error creating manifest list/index JSON: %w", err)
 	}
 	ms.Set(desc, indexJSON)
 
@@ -52,20 +51,20 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 			logrus.Debugf("body reuse error; will retry: %+v", err)
 			err := push(m.Reference, desc, m.Resolver, ms)
 			if err != nil {
-				return "", 0, errors.Wrapf(err, "Error pushing manifest list/index to registry: %s", desc.Digest.String())
+				return "", 0, fmt.Errorf("Error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
 			}
 		} else {
-			return "", 0, errors.Wrapf(err, "Error pushing manifest list/index to registry: %s", desc.Digest.String())
+			return "", 0, fmt.Errorf("Error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
 		}
 	}
 	for _, tag := range addedTags {
 		taggedRef, err := reference.WithTag(baseRef, tag)
 		logrus.Infof("pushing extra tag '%s' to manifest list/index: %s", tag, desc.Digest.String())
 		if err != nil {
-			return "", 0, errors.Wrapf(err, "Error creating additional tag reference: %s", tag)
+			return "", 0, fmt.Errorf("Error creating additional tag reference: %s: %w", tag, err)
 		}
 		if err = pushTagOnly(taggedRef, desc, m.Resolver, ms); err != nil {
-			return "", 0, errors.Wrapf(err, "Error pushing additional tag reference: %s", tag)
+			return "", 0, fmt.Errorf("Error pushing additional tag reference: %s: %w", tag, err)
 		}
 	}
 	return desc.Digest.String(), int(desc.Size), nil
