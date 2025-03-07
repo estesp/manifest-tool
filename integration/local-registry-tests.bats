@@ -22,5 +22,5 @@ teardown_file() {
 }
 
 @test "can inspect a basic image" {
-    ./manifest-tool inspect ${HOSTNM}/alpine:amd64
+    ./manifest-tool --plain-http inspect ${HOSTNM}/alpine:amd64
 }
