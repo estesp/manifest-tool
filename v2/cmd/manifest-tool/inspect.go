@@ -35,33 +35,33 @@ var inspectCmd = &cli.Command{
 		name := c.Args().First()
 		imageRef, err := util.ParseName(name)
 		if err != nil {
-			logrus.Fatal(err)
+			return fmt.Errorf("error parsing image reference: %w", err)
 		}
 		if _, ok := imageRef.(reference.NamedTagged); !ok {
 			if _, ok := imageRef.(reference.Digested); !ok {
-				logrus.Fatal("image reference must include a tag or a digest; manifest-tool does not default to 'latest'")
+				return fmt.Errorf("image reference must include a tag or a digest; manifest-tool does not default to 'latest'")
 			}
 		}
 
 		if c.Bool("expand-config") && !c.Bool("raw") {
-			logrus.Fatal("the --expand-config flag is only valid when used with --raw")
+			return fmt.Errorf("the --expand-config flag is only valid when used with --raw")
 		}
 		memoryStore := store.NewMemoryStore()
 		err = util.CreateRegistryHost(imageRef, c.String("username"), c.String("password"), c.Bool("insecure"),
 			c.Bool("plain-http"), c.String("docker-cfg"), false)
 		if err != nil {
-			return fmt.Errorf("error creating registry host configuration: %v", err)
+			return fmt.Errorf("error creating registry host configuration: %w", err)
 		}
 
 		descriptor, err := registry.FetchDescriptor(util.GetResolver(), memoryStore, imageRef)
 		if err != nil {
-			logrus.Error(err)
+			return fmt.Errorf("error fetching image descriptor: %w", err)
 		}
 
 		if c.Bool("raw") {
 			out, err := generateRawJSON(name, descriptor, c.Bool("expand-config"), memoryStore)
 			if err != nil {
-				logrus.Fatal(err)
+				return fmt.Errorf("error while generating raw JSON output: %w", err)
 			}
 			fmt.Println(string(out))
 			return nil
@@ -72,22 +72,22 @@ var inspectCmd = &cli.Command{
 			// this is a multi-platform image descriptor; marshal to Index type
 			var idx ocispec.Index
 			if err := json.Unmarshal(db, &idx); err != nil {
-				logrus.Fatal(err)
+				return fmt.Errorf("error while unmarshalling the OCI index: %w", err)
 			}
 			outputList(name, memoryStore, descriptor, idx)
 		case ocispec.MediaTypeImageManifest, types.MediaTypeDockerSchema2Manifest:
 			var man ocispec.Manifest
 			if err := json.Unmarshal(db, &man); err != nil {
-				logrus.Fatal(err)
+				return fmt.Errorf("error while unmarshalling the OCI image manifest: %w", err)
 			}
 			_, cb, _ := memoryStore.Get(man.Config)
 			var conf ocispec.Image
 			if err := json.Unmarshal(cb, &conf); err != nil {
-				logrus.Fatal(err)
+				return fmt.Errorf("error while unmarshalling the OCI image configuration: %w", err)
 			}
 			outputImage(name, descriptor, man, conf)
 		default:
-			logrus.Errorf("Unknown descriptor type: %s", descriptor.MediaType)
+			return fmt.Errorf("unknown descriptor type: %s", descriptor.MediaType)
 		}
 
 		return nil

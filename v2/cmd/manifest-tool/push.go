@@ -10,15 +10,14 @@ import (
 	"github.com/estesp/manifest-tool/v2/pkg/types"
 
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
-	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	yaml "gopkg.in/yaml.v3"
 )
 
 const (
-	fmtCantResolvePath   = "Can't resolve path to %q: %v"
-	fmtCantReadYAML      = "Can't read YAML file %q: %v"
-	fmtCantUnmarshalYAML = "Can't unmarshal YAML file %q: %v"
+	fmtCantResolvePath   = "cannot resolve path to %q: %w"
+	fmtCantReadYAML      = "cannot read YAML file %q: %w"
+	fmtCantUnmarshalYAML = "cannot unmarshal YAML file %q: %w"
 )
 
 var pushCmd = &cli.Command{
@@ -47,15 +46,15 @@ var pushCmd = &cli.Command{
 
 				filename, err := filepath.Abs(filePath)
 				if err != nil {
-					logrus.Fatal(fmt.Sprintf(fmtCantResolvePath, filePath, err))
+					return fmt.Errorf(fmtCantResolvePath, filePath, err)
 				}
 				yamlFile, err := os.ReadFile(filename)
 				if err != nil {
-					logrus.Fatal(fmt.Sprintf(fmtCantReadYAML, filePath, err))
+					return fmt.Errorf(fmtCantReadYAML, filePath, err)
 				}
 				err = yaml.Unmarshal(yamlFile, &yamlInput)
 				if err != nil {
-					logrus.Fatal(fmt.Sprintf(fmtCantUnmarshalYAML, filePath, err))
+					return fmt.Errorf(fmtCantUnmarshalYAML, filePath, err)
 				}
 
 				manifestType := types.Docker
@@ -64,7 +63,7 @@ var pushCmd = &cli.Command{
 				}
 				digest, length, err := registry.PushManifestList(c.String("username"), c.String("password"), yamlInput, c.Bool("ignore-missing"), c.Bool("insecure"), c.Bool("plain-http"), manifestType, c.String("docker-cfg"))
 				if err != nil {
-					logrus.Fatal(err)
+					return fmt.Errorf("failed to push image: %w", err)
 				}
 				fmt.Printf("Digest: %s %d\n", digest, length)
 
@@ -109,7 +108,7 @@ var pushCmd = &cli.Command{
 				for _, platform := range platforms {
 					osArchArr := strings.Split(platform, "/")
 					if len(osArchArr) != 2 && len(osArchArr) != 3 {
-						logrus.Fatal("The --platforms argument must be a string slice where one value is of the form 'os/arch'")
+						return fmt.Errorf("the --platforms argument must be a string slice where one value is of the form 'os/arch'")
 					}
 					variant := ""
 					os, arch := osArchArr[0], osArchArr[1]
@@ -136,7 +135,7 @@ var pushCmd = &cli.Command{
 				}
 				digest, length, err := registry.PushManifestList(c.String("username"), c.String("password"), yamlInput, c.Bool("ignore-missing"), c.Bool("insecure"), c.Bool("plain-http"), manifestType, c.String("docker-cfg"))
 				if err != nil {
-					logrus.Fatal(err)
+					return fmt.Errorf("pushing image failed: %w", err)
 				}
 				fmt.Printf("Digest: %s %d\n", digest, length)
 
