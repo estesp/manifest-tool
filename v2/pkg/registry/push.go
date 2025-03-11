@@ -16,6 +16,9 @@ import (
 
 func PushManifestList(username, password string, input types.YAMLInput, ignoreMissing, insecure, plainHttp bool, manifestType types.ManifestType, configDir string) (hash string, length int, err error) {
 	// resolve the target image reference for the combined manifest list/index
+	if manifestType == types.Docker && len(input.Annotations) > 0 {
+		return hash, length, fmt.Errorf("manifest list (Docker media type) does not support annotations; use --type oci instead")
+	}
 	targetRef, err := reference.ParseNormalizedNamed(input.Image)
 	if err != nil {
 		return hash, length, fmt.Errorf("error parsing name for manifest list (%s): %v", input.Image, err)
@@ -26,10 +29,11 @@ func PushManifestList(username, password string, input types.YAMLInput, ignoreMi
 		return hash, length, fmt.Errorf("error creating registry host configuration: %v", err)
 	}
 	manifestList := types.ManifestList{
-		Name:      input.Image,
-		Reference: targetRef,
-		Resolver:  util.GetResolver(),
-		Type:      manifestType,
+		Name:        input.Image,
+		Reference:   targetRef,
+		Resolver:    util.GetResolver(),
+		Type:        manifestType,
+		Annotations: input.Annotations,
 	}
 	// create an in-memory store for OCI descriptors and content used during the push operation
 	memoryStore := store.NewMemoryStore()

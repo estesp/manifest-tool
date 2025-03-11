@@ -1,4 +1,10 @@
 image: __REGISTRY__/alpine:latest
+annotations:
+  org.opencontainers.image.title: My Image Title
+  org.opencontainers.image.description: My image description.
+  org.opencontainers.image.authors: Fred Flintstone
+  org.opencontainers.image.source: https://github.com/estesp/manifest-tool
+  org.opencontainers.image.licenses: Apache-2.0
 manifests: 
   - 
     image: __REGISTRY__/ppc64le_alpine:latest

@@ -93,6 +93,10 @@ var pushCmd = &cli.Command{
 					Name:  "tags",
 					Usage: "comma-separated list of additional tags to apply to the manifest list image",
 				},
+				&cli.StringSliceFlag{
+					Name:  "annotations",
+					Usage: "additional image annotations to apply to the OCI index, in the form of key=value",
+				},
 				&cli.BoolFlag{
 					Name:  "ignore-missing",
 					Usage: "only warn on missing images defined in platform list",
@@ -103,6 +107,7 @@ var pushCmd = &cli.Command{
 				templ := c.String("template")
 				target := c.String("target")
 				tags := c.StringSlice("tags")
+				annotations := c.StringSlice("annotations")
 				srcImages := []types.ManifestEntry{}
 
 				for _, platform := range platforms {
@@ -124,10 +129,19 @@ var pushCmd = &cli.Command{
 						},
 					})
 				}
+				annotationMap := make(map[string]string)
+				for _, annotate := range annotations {
+					parts := strings.Split(annotate, "=")
+					if len(parts) != 2 {
+						return fmt.Errorf("the --annotations argument must be a string in the form 'key=value': %s", annotate)
+					}
+					annotationMap[parts[0]] = parts[1]
+				}
 				yamlInput := types.YAMLInput{
-					Image:     target,
-					Tags:      tags,
-					Manifests: srcImages,
+					Image:       target,
+					Tags:        tags,
+					Manifests:   srcImages,
+					Annotations: annotationMap,
 				}
 				manifestType := types.Docker
 				if c.String("type") == "oci" {
