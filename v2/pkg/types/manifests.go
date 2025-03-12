@@ -22,11 +22,12 @@ const (
 // push the right data to a registry to form a manifestlist or OCI index
 // entry.
 type ManifestList struct {
-	Name      string
-	Type      ManifestType
-	Reference reference.Named
-	Resolver  remotes.Resolver
-	Manifests []Manifest
+	Name        string
+	Type        ManifestType
+	Reference   reference.Named
+	Resolver    remotes.Resolver
+	Manifests   []Manifest
+	Annotations map[string]string
 }
 
 // Manifest is an ocispec.Descriptor of media type manifest (OCI or Docker)

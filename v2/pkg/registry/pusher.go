@@ -27,11 +27,11 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 		if man.PushRef {
 			ref, err := reference.WithDigest(baseRef, man.Descriptor.Digest)
 			if err != nil {
-				return "", 0, fmt.Errorf("Error parsing reference for target manifest component push: %s: %w", m.Reference.String(), err)
+				return "", 0, fmt.Errorf("error parsing reference for target manifest component push: %s: %w", m.Reference.String(), err)
 			}
 			err = push(ref, man.Descriptor, m.Resolver, ms)
 			if err != nil {
-				return "", 0, fmt.Errorf("Error pushing target manifest component reference: %s: %w", ref.String(), err)
+				return "", 0, fmt.Errorf("error pushing target manifest component reference: %s: %w", ref.String(), err)
 			}
 			logrus.Infof("pushed manifest component reference (%s) to target namespace: %s", man.Descriptor.Digest.String(), ref.String())
 		}
@@ -39,7 +39,7 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 	// build the manifest list/index entry to be pushed and save it in the content store
 	desc, indexJSON, err := buildManifest(m)
 	if err != nil {
-		return "", 0, fmt.Errorf("Error creating manifest list/index JSON: %w", err)
+		return "", 0, fmt.Errorf("error creating manifest list/index JSON: %w", err)
 	}
 	ms.Set(desc, indexJSON)
 
@@ -51,20 +51,20 @@ func Push(m types.ManifestList, addedTags []string, ms *store.MemoryStore) (stri
 			logrus.Debugf("body reuse error; will retry: %+v", err)
 			err := push(m.Reference, desc, m.Resolver, ms)
 			if err != nil {
-				return "", 0, fmt.Errorf("Error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
+				return "", 0, fmt.Errorf("error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
 			}
 		} else {
-			return "", 0, fmt.Errorf("Error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
+			return "", 0, fmt.Errorf("error pushing manifest list/index to registry: %s: %w", desc.Digest.String(), err)
 		}
 	}
 	for _, tag := range addedTags {
 		taggedRef, err := reference.WithTag(baseRef, tag)
 		logrus.Infof("pushing extra tag '%s' to manifest list/index: %s", tag, desc.Digest.String())
 		if err != nil {
-			return "", 0, fmt.Errorf("Error creating additional tag reference: %s: %w", tag, err)
+			return "", 0, fmt.Errorf("error creating additional tag reference: %s: %w", tag, err)
 		}
 		if err = pushTagOnly(taggedRef, desc, m.Resolver, ms); err != nil {
-			return "", 0, fmt.Errorf("Error pushing additional tag reference: %s: %w", tag, err)
+			return "", 0, fmt.Errorf("error pushing additional tag reference: %s: %w", tag, err)
 		}
 	}
 	return desc.Digest.String(), int(desc.Size), nil
@@ -81,9 +81,10 @@ func buildManifest(m types.ManifestList) (ocispec.Descriptor, []byte, error) {
 		mediaType = types.MediaTypeDockerSchema2ManifestList
 
 	case types.OCI:
-		index = ociIndex(m.Manifests)
+		index = ociIndex(m)
 		mediaType = ocispec.MediaTypeImageIndex
 	}
+
 	bytes, err := json.MarshalIndent(index, "", "  ")
 	if err != nil {
 		return ocispec.Descriptor{}, []byte{}, err
@@ -144,15 +145,19 @@ func pushTagOnly(ref reference.Reference, desc ocispec.Descriptor, resolver remo
 	return remotes.PushContent(ctx, pusher, desc, ms, nil, nil, wrapper)
 }
 
-func ociIndex(m []types.Manifest) ocispec.Index {
+func ociIndex(m types.ManifestList) ocispec.Index {
 	index := ocispec.Index{
 		Versioned: specs.Versioned{
 			SchemaVersion: 2,
 		},
-		MediaType: "application/vnd.oci.image.index.v1+json",
+		MediaType:   ocispec.MediaTypeImageIndex,
+		Annotations: map[string]string{},
 	}
-	for _, man := range m {
+	for _, man := range m.Manifests {
 		index.Manifests = append(index.Manifests, man.Descriptor)
+	}
+	for k, v := range m.Annotations {
+		index.Annotations[k] = v
 	}
 	return index
 }
