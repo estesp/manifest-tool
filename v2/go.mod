@@ -5,7 +5,7 @@ go 1.22.0
 toolchain go1.24.1
 
 require (
-	github.com/containerd/containerd/v2 v2.0.2
+	github.com/containerd/containerd/v2 v2.0.3
 	github.com/containerd/errdefs v1.0.0
 	github.com/docker/cli v27.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
@@ -41,8 +41,8 @@ require (
 	go.opentelemetry.io/otel v1.31.0 // indirect
 	go.opentelemetry.io/otel/metric v1.31.0 // indirect
 	go.opentelemetry.io/otel/trace v1.31.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gotest.tools/v3 v3.4.0 // indirect
 )
