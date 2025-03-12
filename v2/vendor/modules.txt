@@ -104,7 +104,7 @@ github.com/russross/blackfriday/v2
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/urfave/cli/v2 v2.27.5
+# github.com/urfave/cli/v2 v2.27.6
 ## explicit; go 1.18
 github.com/urfave/cli/v2
 # github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
