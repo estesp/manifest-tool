@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/containerd/containerd/v2 v2.0.2
 	github.com/containerd/errdefs v1.0.0
-	github.com/docker/cli v27.0.1+incompatible
+	github.com/docker/cli v28.0.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v27.1.1+incompatible
 	github.com/fatih/color v1.10.0
