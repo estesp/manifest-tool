@@ -27,7 +27,7 @@ WORKDIR /manifest-tool
 COPY  . /manifest-tool
 RUN /manifest-tool/hack/makestatic.sh $TARGETARCH ${TARGETVARIANT#v}
 
-FROM --platform=$TARGETPLATFORM alpine:3.21.0
+FROM --platform=$TARGETPLATFORM alpine:3.21.3
 COPY --from=bld /manifest-tool/manifest-tool /manifest-tool
 COPY --from=bld /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=bld --chown=0:0 /go/bin/docker-credential-gcr /usr/bin/docker-credential-gcloud
