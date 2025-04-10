@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        go-version: [1.24.1]
+        go-version: [1.24.2]
         os: [ubuntu-22.04, macos-14, windows-2019]
 
     steps:
@@ -50,7 +50,7 @@ jobs:
   #
   project:
     name: DCO/Vendor Checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
 
     steps:
@@ -62,7 +62,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.24.2'
 
       - name: Set env
         shell: bash
@@ -107,7 +107,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.24.2'
 
       - name: Set env
         shell: bash
@@ -130,14 +130,14 @@ jobs:
   #
   tests:
     name: Integration tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     needs: [project, linters]
 
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.24.2'
 
       - name: Set env
         shell: bash
@@ -175,14 +175,14 @@ jobs:
   #
   cross:
     name: Cross-builds
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     needs: [project, linters]
 
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.24.2'
 
       - name: Set env
         shell: bash
