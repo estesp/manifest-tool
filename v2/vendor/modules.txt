@@ -139,7 +139,7 @@ go.opentelemetry.io/otel/metric/noop
 ## explicit; go 1.22
 go.opentelemetry.io/otel/trace
 go.opentelemetry.io/otel/trace/embedded
-# golang.org/x/sync v0.12.0
+# golang.org/x/sync v0.14.0
 ## explicit; go 1.23.0
 golang.org/x/sync/errgroup
 golang.org/x/sync/semaphore
@@ -155,8 +155,8 @@ golang.org/x/sys/windows
 gopkg.in/yaml.v3
 # gotest.tools/v3 v3.4.0
 ## explicit; go 1.13
-# oras.land/oras-go/v2 v2.5.0
-## explicit; go 1.21
+# oras.land/oras-go/v2 v2.6.0
+## explicit; go 1.23.0
 oras.land/oras-go/v2/content
 oras.land/oras-go/v2/content/memory
 oras.land/oras-go/v2/errdef
