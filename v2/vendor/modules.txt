@@ -1,25 +1,19 @@
-# github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6
-## explicit; go 1.20
-github.com/AdaLogics/go-fuzz-headers
-# github.com/containerd/containerd/v2 v2.0.5
+# github.com/containerd/containerd/v2 v2.1.1
 ## explicit; go 1.23.0
 github.com/containerd/containerd/v2/core/content
 github.com/containerd/containerd/v2/core/images
 github.com/containerd/containerd/v2/core/remotes
 github.com/containerd/containerd/v2/core/remotes/docker
 github.com/containerd/containerd/v2/core/remotes/docker/auth
-github.com/containerd/containerd/v2/core/remotes/docker/schema1
 github.com/containerd/containerd/v2/core/remotes/errors
-github.com/containerd/containerd/v2/internal/fsverity
+github.com/containerd/containerd/v2/core/transfer
+github.com/containerd/containerd/v2/internal/lazyregexp
 github.com/containerd/containerd/v2/internal/randutil
 github.com/containerd/containerd/v2/pkg/archive/compression
-github.com/containerd/containerd/v2/pkg/deprecation
 github.com/containerd/containerd/v2/pkg/filters
-github.com/containerd/containerd/v2/pkg/kernelversion
 github.com/containerd/containerd/v2/pkg/labels
 github.com/containerd/containerd/v2/pkg/reference
 github.com/containerd/containerd/v2/pkg/tracing
-github.com/containerd/containerd/v2/plugins/content/local
 github.com/containerd/containerd/v2/version
 # github.com/containerd/errdefs v1.0.0
 ## explicit; go 1.20
@@ -66,17 +60,16 @@ github.com/go-logr/logr/funcr
 # github.com/go-logr/stdr v1.2.2
 ## explicit; go 1.16
 github.com/go-logr/stdr
-# github.com/klauspost/compress v1.17.11
-## explicit; go 1.21
+# github.com/klauspost/compress v1.18.0
+## explicit; go 1.22
 github.com/klauspost/compress
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
 github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress/internal/le
 github.com/klauspost/compress/internal/snapref
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
-# github.com/kr/text v0.2.0
-## explicit
 # github.com/mattn/go-colorable v0.1.13
 ## explicit; go 1.15
 github.com/mattn/go-colorable
@@ -86,8 +79,6 @@ github.com/mattn/go-isatty
 # github.com/moby/locker v1.0.1
 ## explicit; go 1.13
 github.com/moby/locker
-# github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
-## explicit; go 1.12
 # github.com/opencontainers/go-digest v1.0.0
 ## explicit; go 1.13
 github.com/opencontainers/go-digest
@@ -110,14 +101,18 @@ github.com/urfave/cli/v2
 # github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
 ## explicit; go 1.15
 github.com/xrash/smetrics
-# go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.56.0
-## explicit; go 1.22
+# go.opentelemetry.io/auto/sdk v1.1.0
+## explicit; go 1.22.0
+go.opentelemetry.io/auto/sdk
+go.opentelemetry.io/auto/sdk/internal/telemetry
+# go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.60.0
+## explicit; go 1.22.0
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/request
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/semconv
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/semconvutil
-# go.opentelemetry.io/otel v1.31.0
-## explicit; go 1.22
+# go.opentelemetry.io/otel v1.35.0
+## explicit; go 1.22.0
 go.opentelemetry.io/otel
 go.opentelemetry.io/otel/attribute
 go.opentelemetry.io/otel/baggage
@@ -130,26 +125,26 @@ go.opentelemetry.io/otel/propagation
 go.opentelemetry.io/otel/semconv/v1.20.0
 go.opentelemetry.io/otel/semconv/v1.21.0
 go.opentelemetry.io/otel/semconv/v1.26.0
-# go.opentelemetry.io/otel/metric v1.31.0
-## explicit; go 1.22
+# go.opentelemetry.io/otel/metric v1.35.0
+## explicit; go 1.22.0
 go.opentelemetry.io/otel/metric
 go.opentelemetry.io/otel/metric/embedded
 go.opentelemetry.io/otel/metric/noop
-# go.opentelemetry.io/otel/trace v1.31.0
-## explicit; go 1.22
+# go.opentelemetry.io/otel/trace v1.35.0
+## explicit; go 1.22.0
 go.opentelemetry.io/otel/trace
 go.opentelemetry.io/otel/trace/embedded
+go.opentelemetry.io/otel/trace/internal/telemetry
+go.opentelemetry.io/otel/trace/noop
 # golang.org/x/sync v0.14.0
 ## explicit; go 1.23.0
 golang.org/x/sync/errgroup
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.31.0
+# golang.org/x/sys v0.33.0
 ## explicit; go 1.23.0
 golang.org/x/sys/execabs
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f
-## explicit
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
