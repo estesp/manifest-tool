@@ -143,7 +143,7 @@ jobs:
 
   containers-win:
     name: Build and push Windows release images
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs: [check]
     timeout-minutes: 30
 
