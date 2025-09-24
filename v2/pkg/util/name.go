@@ -23,7 +23,7 @@ func ParseName(name string) (reference.Named, error) {
 	}
 	hostname, remoteName := splitHostname(distref.String())
 	if hostname == "" {
-		return nil, fmt.Errorf("Please use a fully qualified repository name")
+		return nil, fmt.Errorf("please use a fully qualified repository name")
 	}
 	return reference.ParseNormalizedNamed(fmt.Sprintf("%s/%s", hostname, remoteName))
 }

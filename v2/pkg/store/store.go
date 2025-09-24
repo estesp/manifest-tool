@@ -110,7 +110,7 @@ func (m *MemoryStore) ReaderAt(ctx context.Context, desc ocispec.Descriptor) (cc
 	if err != nil {
 		return nil, errdefs.ErrNotFound
 	}
-	defer rc.Close()
+	defer rc.Close() //nolint:errcheck
 
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, rc); err != nil {
@@ -160,7 +160,7 @@ func (m *MemoryStore) Get(desc ocispec.Descriptor) (ocispec.Descriptor, []byte, 
 	if err != nil {
 		return desc, nil, false
 	}
-	defer rc.Close()
+	defer rc.Close() //nolint:errcheck
 
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, rc); err != nil {

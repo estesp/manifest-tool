@@ -75,7 +75,7 @@ func CreateRegistryHost(imageRef reference.Named, username, password string, ins
 				if err != nil {
 					return "", "", fmt.Errorf("can't load docker config file %s: %w", dockerConfigPath, err)
 				}
-				defer file.Close()
+				defer file.Close() //nolint:errcheck
 				if err := cfg.LoadFromReader(file); err != nil {
 					return "", "", fmt.Errorf("can't read and parse docker config file %s: %v", dockerConfigPath, err)
 				}
