@@ -7,7 +7,7 @@ toolchain go1.24.6
 require (
 	github.com/containerd/containerd/v2 v2.1.5
 	github.com/containerd/errdefs v1.0.0
-	github.com/docker/cli v28.5.1+incompatible
+	github.com/docker/cli v29.0.3+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v28.5.1+incompatible
 	github.com/fatih/color v1.18.0
@@ -33,7 +33,6 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/moby/locker v1.0.1 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
