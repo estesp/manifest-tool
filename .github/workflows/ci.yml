@@ -34,9 +34,10 @@ jobs:
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - uses: golangci/golangci-lint-action@v9
         with:
@@ -60,9 +61,10 @@ jobs:
           fetch-depth: 100
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
@@ -105,19 +107,20 @@ jobs:
         os: [ubuntu-24.04, macos-26, windows-2022]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+        with:
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v6
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make
         run: |
@@ -135,19 +138,20 @@ jobs:
     needs: [project, linters]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+        with:
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v6
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make binary
         run: make binary
@@ -180,19 +184,20 @@ jobs:
     needs: [project, linters]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+        with:
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v6
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make cross-built binaries
         run: make cross
