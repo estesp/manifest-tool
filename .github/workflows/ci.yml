@@ -20,11 +20,11 @@ jobs:
 
     strategy:
       matrix:
-        go-version: [1.25.1]
-        os: [ubuntu-22.04, macos-14, windows-2022]
+        go-version: [1.26.1]
+        os: [ubuntu-24.04, macos-26, windows-2022]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           path: src/github.com/estesp/manifest-tool
 
@@ -34,13 +34,14 @@ jobs:
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
-      - uses: golangci/golangci-lint-action@v7
+      - uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.5.0
+          version: v2.9.0
           skip-cache: true
           working-directory: src/github.com/estesp/manifest-tool/v2
           args: --timeout=5m
@@ -50,19 +51,20 @@ jobs:
   #
   project:
     name: DCO/Vendor Checks
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           path: src/github.com/estesp/manifest-tool
           fetch-depth: 100
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '1.25.1'
+          go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
@@ -102,22 +104,23 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-26, windows-2022]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
         with:
-          go-version: '1.25.1'
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v4
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make
         run: |
@@ -130,24 +133,25 @@ jobs:
   #
   tests:
     name: Integration tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [project, linters]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
         with:
-          go-version: '1.25.1'
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v4
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make binary
         run: make binary
@@ -175,24 +179,25 @@ jobs:
   #
   cross:
     name: Cross-builds
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [project, linters]
 
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
         with:
-          go-version: '1.25.1'
+          path: src/github.com/estesp/manifest-tool
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.1'
+          cache-dependency-path: 'src/github.com/estesp/manifest-tool/v2/go.sum'
 
       - name: Set env
         shell: bash
         run: |
           echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - uses: actions/checkout@v4
-        with:
-          path: src/github.com/estesp/manifest-tool
 
       - name: Make cross-built binaries
         run: make cross
