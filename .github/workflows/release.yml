@@ -8,14 +8,14 @@ name: manifest-tool Release
 jobs:
   check:
     name: Check Signed Tag
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       stringver: ${{ steps.contentrel.outputs.stringver }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref }}
           path: src/github.com/estesp/manifest-tool
@@ -50,7 +50,7 @@ jobs:
 
   build:
     name: Build binaries
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [check]
     timeout-minutes: 10
 
@@ -58,7 +58,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.1'
+          go-version: '1.26.1'
 
       - name: Set env
         shell: bash
@@ -70,7 +70,7 @@ jobs:
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
       - name: Checkout manifest-tool
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: estesp/manifest-tool
           ref: ${{ github.ref }}
@@ -93,7 +93,7 @@ jobs:
 
   containers-lx:
     name: Build and push Linux release images
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [check]
     timeout-minutes: 30
 
@@ -108,7 +108,7 @@ jobs:
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
       - name: Checkout manifest-tool
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: estesp/manifest-tool
           ref: ${{ github.ref }}
@@ -151,7 +151,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.1'
+          go-version: '1.26.1'
 
       - name: Set env
         shell: bash
@@ -163,7 +163,7 @@ jobs:
           echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
       - name: Checkout manifest-tool
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: estesp/manifest-tool
           ref: ${{ github.ref }}
@@ -187,7 +187,7 @@ jobs:
 
   container-assemble:
     name: Assemble and push multi-platform release image
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [containers-lx, containers-win]
     timeout-minutes: 15
 
@@ -195,7 +195,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.1'
+          go-version: '1.26.1'
 
       - name: Set env
         shell: bash
@@ -213,7 +213,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Checkout manifest-tool
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: estesp/manifest-tool
           ref: ${{ github.ref }}
@@ -242,7 +242,7 @@ jobs:
 
   release:
     name: Create manifest-tool Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [build, check]
 
