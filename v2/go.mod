@@ -1,8 +1,6 @@
 module github.com/estesp/manifest-tool/v2
 
-go 1.24.3
-
-toolchain go1.24.6
+go 1.25.0
 
 require (
 	github.com/containerd/containerd/v2 v2.2.2
@@ -10,7 +8,7 @@ require (
 	github.com/docker/cli v29.3.0+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v28.5.2+incompatible
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/sirupsen/logrus v1.9.4
@@ -30,7 +28,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/klauspost/compress v1.18.1 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/moby/locker v1.0.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -41,7 +39,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	gotest.tools/v3 v3.4.0 // indirect
 )
