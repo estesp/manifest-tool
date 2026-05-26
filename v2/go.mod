@@ -1,6 +1,6 @@
 module github.com/estesp/manifest-tool/v2
 
-go 1.26.2
+go 1.26.3
 
 require (
 	github.com/containerd/containerd/v2 v2.3.0
