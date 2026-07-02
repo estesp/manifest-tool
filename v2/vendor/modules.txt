@@ -207,8 +207,8 @@ google.golang.org/protobuf/types/known/anypb
 gopkg.in/yaml.v3
 # gotest.tools/v3 v3.4.0
 ## explicit; go 1.13
-# oras.land/oras-go/v2 v2.6.0
-## explicit; go 1.23.0
+# oras.land/oras-go/v2 v2.6.1
+## explicit; go 1.25.0
 oras.land/oras-go/v2/content
 oras.land/oras-go/v2/content/memory
 oras.land/oras-go/v2/errdef
