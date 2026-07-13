@@ -3,7 +3,7 @@ module github.com/estesp/manifest-tool/v2
 go 1.26.3
 
 require (
-	github.com/containerd/containerd/v2 v2.3.2
+	github.com/containerd/containerd/v2 v2.3.3
 	github.com/containerd/errdefs v1.0.0
 	github.com/docker/cli v29.6.1+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
