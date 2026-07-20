@@ -133,16 +133,22 @@ func outputList(name string, cs *store.MemoryStore, descriptor ocispec.Descripto
 				continue
 			}
 			outputStr.WriteString(fmt.Sprintf("[%d] Platform:\n", i+1))
-			outputStr.WriteString(fmt.Sprintf("[%d]    -      OS: %s\n", i+1, green(img.Platform.OS)))
-			if img.Platform.OSVersion != "" {
-				outputStr.WriteString(fmt.Sprintf("[%d]    - OS Vers: %s\n", i+1, green(img.Platform.OSVersion)))
-			}
-			if len(img.Platform.OSFeatures) > 0 {
-				outputStr.WriteString(fmt.Sprintf("[%d]    - OS Feat: %s\n", i+1, green(img.Platform.OSFeatures)))
-			}
-			outputStr.WriteString(fmt.Sprintf("[%d]    -    Arch: %s\n", i+1, green(img.Platform.Architecture)))
-			if img.Platform.Variant != "" {
-				outputStr.WriteString(fmt.Sprintf("[%d]    - Variant: %s\n", i+1, green(img.Platform.Variant)))
+			// Descriptor.Platform is optional in the OCI image-spec, so an index
+			// entry may legitimately omit it. Guard the dereference to avoid a panic.
+			if img.Platform != nil {
+				outputStr.WriteString(fmt.Sprintf("[%d]    -      OS: %s\n", i+1, green(img.Platform.OS)))
+				if img.Platform.OSVersion != "" {
+					outputStr.WriteString(fmt.Sprintf("[%d]    - OS Vers: %s\n", i+1, green(img.Platform.OSVersion)))
+				}
+				if len(img.Platform.OSFeatures) > 0 {
+					outputStr.WriteString(fmt.Sprintf("[%d]    - OS Feat: %s\n", i+1, green(img.Platform.OSFeatures)))
+				}
+				outputStr.WriteString(fmt.Sprintf("[%d]    -    Arch: %s\n", i+1, green(img.Platform.Architecture)))
+				if img.Platform.Variant != "" {
+					outputStr.WriteString(fmt.Sprintf("[%d]    - Variant: %s\n", i+1, green(img.Platform.Variant)))
+				}
+			} else {
+				outputStr.WriteString(fmt.Sprintf("[%d]    -      (no platform specified)\n", i+1))
 			}
 			outputStr.WriteString(fmt.Sprintf("[%d] # Layers: %s\n", i+1, red(len(man.Layers))))
 			for j, layer := range man.Layers {
