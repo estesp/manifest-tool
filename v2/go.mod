@@ -5,6 +5,7 @@ go 1.26.3
 require (
 	github.com/containerd/containerd/v2 v2.3.3
 	github.com/containerd/errdefs v1.0.0
+	github.com/distribution/reference v0.6.0
 	github.com/docker/cli v29.7.0+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v28.5.2+incompatible

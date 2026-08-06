@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/containerd/containerd/v2/core/remotes"
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
 	"github.com/estesp/manifest-tool/v2/pkg/store"
 	"github.com/estesp/manifest-tool/v2/pkg/types"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
