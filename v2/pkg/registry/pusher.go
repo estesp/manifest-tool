@@ -11,8 +11,8 @@ import (
 
 	"github.com/containerd/containerd/v2/core/images"
 	"github.com/containerd/containerd/v2/core/remotes"
+	"github.com/distribution/reference"
 	"github.com/docker/distribution/manifest/manifestlist"
-	"github.com/docker/distribution/reference"
 	"github.com/opencontainers/go-digest"
 	specs "github.com/opencontainers/image-spec/specs-go"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"

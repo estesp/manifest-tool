@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
 	"github.com/estesp/manifest-tool/v2/pkg/store"
 	"github.com/estesp/manifest-tool/v2/pkg/types"
 	"github.com/estesp/manifest-tool/v2/pkg/util"

@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/containerd/containerd/v2/core/remotes"
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
 	digest "github.com/opencontainers/go-digest"
 )
 
