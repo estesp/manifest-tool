@@ -115,9 +115,9 @@ func outputList(name string, cs *store.MemoryStore, descriptor ocispec.Descripto
 				attestationDetail = " (vnd.docker.reference.type=attestation-manifest)"
 			}
 		}
-		outputStr.WriteString(fmt.Sprintf("[%d]     Type: %s%s\n", i+1, green(img.MediaType), green(attestationDetail)))
-		outputStr.WriteString(fmt.Sprintf("[%d]   Digest: %s\n", i+1, yellow(img.Digest)))
-		outputStr.WriteString(fmt.Sprintf("[%d]   Length: %s\n", i+1, blue(img.Size)))
+		fmt.Fprintf(&outputStr, "[%d]     Type: %s%s\n", i+1, green(img.MediaType), green(attestationDetail))
+		fmt.Fprintf(&outputStr, "[%d]   Digest: %s\n", i+1, yellow(img.Digest))
+		fmt.Fprintf(&outputStr, "[%d]   Length: %s\n", i+1, blue(img.Size))
 
 		_, db, _ := cs.Get(img)
 		switch img.MediaType {
@@ -129,35 +129,35 @@ func outputList(name string, cs *store.MemoryStore, descriptor ocispec.Descripto
 			if len(attestationDetail) > 0 {
 				// only output info about the attestation info
 				attestRef := img.Annotations["vnd.docker.reference.digest"]
-				outputStr.WriteString(fmt.Sprintf("[%d]       >>> Attestation for digest: %s\n\n", i+1, yellow(attestRef)))
+				fmt.Fprintf(&outputStr, "[%d]       >>> Attestation for digest: %s\n\n", i+1, yellow(attestRef))
 				continue
 			}
-			outputStr.WriteString(fmt.Sprintf("[%d] Platform:\n", i+1))
+			fmt.Fprintf(&outputStr, "[%d] Platform:\n", i+1)
 			// Descriptor.Platform is optional in the OCI image-spec, so an index
 			// entry may legitimately omit it. Guard the dereference to avoid a panic.
 			if img.Platform != nil {
-				outputStr.WriteString(fmt.Sprintf("[%d]    -      OS: %s\n", i+1, green(img.Platform.OS)))
+				fmt.Fprintf(&outputStr, "[%d]    -      OS: %s\n", i+1, green(img.Platform.OS))
 				if img.Platform.OSVersion != "" {
-					outputStr.WriteString(fmt.Sprintf("[%d]    - OS Vers: %s\n", i+1, green(img.Platform.OSVersion)))
+					fmt.Fprintf(&outputStr, "[%d]    - OS Vers: %s\n", i+1, green(img.Platform.OSVersion))
 				}
 				if len(img.Platform.OSFeatures) > 0 {
-					outputStr.WriteString(fmt.Sprintf("[%d]    - OS Feat: %s\n", i+1, green(img.Platform.OSFeatures)))
+					fmt.Fprintf(&outputStr, "[%d]    - OS Feat: %s\n", i+1, green(img.Platform.OSFeatures))
 				}
-				outputStr.WriteString(fmt.Sprintf("[%d]    -    Arch: %s\n", i+1, green(img.Platform.Architecture)))
+				fmt.Fprintf(&outputStr, "[%d]    -    Arch: %s\n", i+1, green(img.Platform.Architecture))
 				if img.Platform.Variant != "" {
-					outputStr.WriteString(fmt.Sprintf("[%d]    - Variant: %s\n", i+1, green(img.Platform.Variant)))
+					fmt.Fprintf(&outputStr, "[%d]    - Variant: %s\n", i+1, green(img.Platform.Variant))
 				}
 			} else {
-				outputStr.WriteString(fmt.Sprintf("[%d]    -      (no platform specified)\n", i+1))
+				fmt.Fprintf(&outputStr, "[%d]    -      (no platform specified)\n", i+1)
 			}
-			outputStr.WriteString(fmt.Sprintf("[%d] # Layers: %s\n", i+1, red(len(man.Layers))))
+			fmt.Fprintf(&outputStr, "[%d] # Layers: %s\n", i+1, red(len(man.Layers)))
 			for j, layer := range man.Layers {
-				outputStr.WriteString(fmt.Sprintf("     layer %s: digest = %s\n", red(fmt.Sprintf("%02d", j+1)), yellow(layer.Digest)))
-				outputStr.WriteString(fmt.Sprintf("                 type = %s\n", green(layer.MediaType)))
+				fmt.Fprintf(&outputStr, "     layer %s: digest = %s\n", red(fmt.Sprintf("%02d", j+1)), yellow(layer.Digest))
+				fmt.Fprintf(&outputStr, "                 type = %s\n", green(layer.MediaType))
 			}
 			outputStr.WriteString("\n")
 		default:
-			outputStr.WriteString(fmt.Sprintf("Unknown media type for further display: %s\n", img.MediaType))
+			fmt.Fprintf(&outputStr, "Unknown media type for further display: %s\n", img.MediaType)
 		}
 	}
 	imageCount := len(index.Manifests) - attestations
